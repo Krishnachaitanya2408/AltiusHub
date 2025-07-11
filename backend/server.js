@@ -10,6 +10,8 @@ mongoose.connect("mongodb://localhost:27017/studentsDB")
   .then(() => console.log("Connected MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+
+//Defined the Schema for the Student
 const studentSchema = new mongoose.Schema({
   name: String,
   rollNo: String,
@@ -25,6 +27,7 @@ const studentSchema = new mongoose.Schema({
 const Student = mongoose.model("Student", studentSchema);
 
 
+//POST route for the Student
 app.post("/student", async(req, res)=>{
   try{
     const student = new Student(req.body);
@@ -35,6 +38,8 @@ app.post("/student", async(req, res)=>{
   }
 });
 
+
+//Update ROute for the Student
 app.put("/student/:id", async(req, res)=>{
   const rollNo = req.params.id;
   try{
@@ -54,6 +59,8 @@ app.put("/student/:id", async(req, res)=>{
   }
 });
 
+
+//Delete Route for the student
 app.delete("/student/:id",async(req, res)=>{
   const rollNo = req.params.id;
   try {
@@ -70,6 +77,8 @@ app.delete("/student/:id",async(req, res)=>{
   }
 });
 
+
+//ROute for getting all the students
 app.get("/allStudents", async (req, res) => {
   try {
     const students = await Student.find({}, { name: 1, rollNo: 1, scores: 1, _id: 0 });
@@ -80,7 +89,7 @@ app.get("/allStudents", async (req, res) => {
   }
 });
 
-
+//Starting the server
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
