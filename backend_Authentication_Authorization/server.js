@@ -9,16 +9,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+//COnnected to the MONGODB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Connected MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+//Defined the basic UserSchema
 const UserSchema = new mongoose.Schema({
   email: {type: String, unique: true},
   password: String,
 });
 const User = mongoose.model('User',UserSchema);
 
+//Middleware for Authorization
 const auth = (req, res, next)=>{
   const header = req.headers.authorization;
   if(!header)return res.sendStatus(401);
@@ -34,6 +37,7 @@ const auth = (req, res, next)=>{
   }
 };
 
+//Registering the USER
 app.post('/api/register', async(req,res)=>{
   const hashed = await bcrypt.hash(req.body.password, 10);
   const mail = req.body.email;
@@ -42,6 +46,7 @@ app.post('/api/register', async(req,res)=>{
   res.status(201).json({ message:'Registered'});
 });
 
+//Logging in the USER
 app.post('/api/login', async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).json({ message: 'Invalid credentials' });
